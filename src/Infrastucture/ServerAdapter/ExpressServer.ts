@@ -1,6 +1,6 @@
 import { IConfig } from '../../Interfaces/IConfig'
 import 'reflect-metadata'
-import express, { Express, Request, Response, NextFunction, Router } from 'express'
+import express, { Express, Request, Response, Router } from 'express'
 import cors from 'cors'
 import { inject, injectable } from 'inversify'
 import { TYPES } from '../../IOC/types'
@@ -20,6 +20,7 @@ export class ExpressServer implements IServer {
                 @inject(TYPES.CriptoCurrenciesUseCase) criptoCurrenciesUseCase: ICriptoCurrenciesUseCase) {
         this.app = express()
         this.app.use(cors({ origin: '*' }))
+        this.app.use(express.json())
         this.config = config
         this.criptoCurrenciesUseCase = criptoCurrenciesUseCase
     }
@@ -33,8 +34,8 @@ export class ExpressServer implements IServer {
 
     private createRoutes(): Router {
         const router = express.Router()
-        router.get('/health', this.healthCheck)
-        router.post('/signIn', this.registerNewUser)
+        router.get('/health', this.healthCheck.bind(this))
+        router.post('/signIn', this.registerNewUser.bind(this))
         return router
     }
 
@@ -42,14 +43,14 @@ export class ExpressServer implements IServer {
         res.json('OK')
     }
 
-    private async registerNewUser(req: Request, res: Response, next: NextFunction) {
+    private async registerNewUser(req: Request, res: Response) {
         try {
             const body = req.body
             const user = new User(uuid(), body.name, body.lastName, body.userName, body.password)
             const savedUser = await this.criptoCurrenciesUseCase.registerUser(user)
             res.json(savedUser)
         } catch (error) {
-            next(error)
+            res.status(400).json(error.message)
         }
     }
 }

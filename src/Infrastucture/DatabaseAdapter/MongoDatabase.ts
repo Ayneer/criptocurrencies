@@ -16,13 +16,15 @@ export class MongoDatabase implements IDatabase {
         this.collection = config.database.table
         const connectionString = `${config.database.protocol}://${config.database.host}:${config.database.port}/${config.database.dbName}`
         mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true })
-        const schema = new mongoose.Schema(this.getUserSchema(), { toObject: { getters: true } })
+        const schema = new mongoose.Schema(this.getUserSchema(), { toObject: { getters: true }, versionKey: false })
         this.userModel = mongoose.model(this.collection, schema)
     }
 
     private getUserSchema() {
         return {
-            id: String,
+            _id: String,
+            name: String,
+            lastName: String,
             userName: String,
             password: String,
             currencies: [{
@@ -41,11 +43,12 @@ export class MongoDatabase implements IDatabase {
         return this.userModel.findById(userId)
     }
 
-    async getUserByName(userName: string): Promise<User> {
-        return (await this.userModel.find({ name: userName }))[0]
+    async getUserByUserName(userName: string): Promise<User> {
+        const response = await this.userModel.find({ userName: userName })
+        return response[0]
     }
 
     async updateUser(user: User): Promise<User> {
-        return this.userModel.updateOne({ id: user.id }, user)
+        return this.userModel.updateOne({ id: user._id }, user)
     }
 }

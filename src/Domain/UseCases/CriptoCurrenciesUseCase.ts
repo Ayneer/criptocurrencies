@@ -19,7 +19,7 @@ export class CriptoCurrenciesUseCase implements ICriptoCurrenciesUseCase {
     }
 
     async registerUser(user: User): Promise<User> {
-        const previousUser = await this.database.getUserByName(user.userName)
+        const previousUser = await this.database.getUserByUserName(user.userName)
         if (!previousUser) {
             user.password = await this.auth.encodePassword(user.password)
             return this.database.createUser(user)
@@ -28,7 +28,7 @@ export class CriptoCurrenciesUseCase implements ICriptoCurrenciesUseCase {
     }
 
     async login(userName: string, password: string): Promise<User> {
-        const user = await this.database.getUserByName(userName)
+        const user = await this.database.getUserByUserName(userName)
         if (user) {
             if (await this.auth.isValidPassword(password, user.password)) {
                 throw new Error('Invalid user or password')
