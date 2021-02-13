@@ -1,6 +1,6 @@
-import { User } from './../../Domain/Models/User'
-import { IConfig } from './../../Domain/Interfaces/IConfig'
-import { IDatabase } from './../../Domain/Interfaces/IDatabase'
+import { User } from '../../Models/User'
+import { IConfig } from '../../Interfaces/IConfig'
+import { IDatabase } from '../../Interfaces/IDatabase'
 import { inject, injectable } from 'inversify'
 import mongoose, { Model } from 'mongoose'
 import { TYPES } from '../../IOC/types'
@@ -16,7 +16,7 @@ export class MongoDatabase implements IDatabase {
         this.collection = config.database.table
         const connectionString = `${config.database.protocol}://${config.database.host}:${config.database.port}/${config.database.dbName}`
         mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true })
-        let schema = new mongoose.Schema(this.getUserSchema(), { toObject: { getters: true } })
+        const schema = new mongoose.Schema(this.getUserSchema(), { toObject: { getters: true } })
         this.userModel = mongoose.model(this.collection, schema)
     }
 

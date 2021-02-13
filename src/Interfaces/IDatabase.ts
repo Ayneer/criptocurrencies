@@ -1,4 +1,4 @@
-import { User } from './../Models/User'
+import { User } from '../Models/User'
 
 export interface IDatabase {
     createUser(user: User): Promise<User>
