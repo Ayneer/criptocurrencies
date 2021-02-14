@@ -27,13 +27,14 @@ export class CriptoCurrenciesUseCase implements ICriptoCurrenciesUseCase {
         throw new Error('User already exists')
     }
 
-    async login(userName: string, password: string): Promise<User> {
+    async login(userName: string, password: string): Promise<string> {
         const user = await this.database.getUserByUserName(userName)
         if (user) {
             if (await this.auth.isValidPassword(password, user.password)) {
+                return this.auth.getNewToken(user)
+            } else {
                 throw new Error('Invalid user or password')
             }
-            return user
         }
         throw new Error('Invalid user or password')
     }

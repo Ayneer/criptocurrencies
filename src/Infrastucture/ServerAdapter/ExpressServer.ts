@@ -8,6 +8,7 @@ import { IServer } from '../../Interfaces/IServer'
 import { ICriptoCurrenciesUseCase } from '../../Interfaces/ICriptoCurrenciesUseCase'
 import { User } from '../../Models/User'
 import { v4 as uuid } from 'uuid'
+import { Utils } from '../../Domain/Utils'
 
 @injectable()
 export class ExpressServer implements IServer {
@@ -36,6 +37,7 @@ export class ExpressServer implements IServer {
         const router = express.Router()
         router.get('/health', this.healthCheck.bind(this))
         router.post('/signIn', this.registerNewUser.bind(this))
+        router.post('/login', this.login.bind(this))
         return router
     }
 
@@ -45,12 +47,22 @@ export class ExpressServer implements IServer {
 
     private async registerNewUser(req: Request, res: Response) {
         try {
-            const body = req.body
-            const user = new User(uuid(), body.name, body.lastName, body.userName, body.password)
+            const { name, lastName, userName, password } = req.body
+            const user = new User(uuid(), name, lastName, userName, password)
             const savedUser = await this.criptoCurrenciesUseCase.registerUser(user)
-            res.json(savedUser)
+            res.json(Utils.getUserResponse(savedUser))
         } catch (error) {
             res.status(400).json(error.message)
+        }
+    }
+
+    private async login(req: Request, res: Response) {
+        try {
+            const { userName, password } = req.body
+            const token = await this.criptoCurrenciesUseCase.login(userName, password)
+            res.json({ token })
+        } catch (error) {
+            res.status(401).json(error.message)
         }
     }
 }

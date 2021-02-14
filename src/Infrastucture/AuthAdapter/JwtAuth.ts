@@ -12,9 +12,11 @@ export class JwtAuth implements IAuth {
     private secret: string
     private userTokens: string[] = []
     private saltRounds: number = 10
+    private expirationTime: number
 
     constructor(@inject(TYPES.Config) config: IConfig) {
         this.secret = config.secretToken
+        this.expirationTime = config.expirationMinutes * 60
     }
 
     async encodePassword(password: string): Promise<string> {
@@ -26,7 +28,7 @@ export class JwtAuth implements IAuth {
     }
 
     getNewToken(user: User): string {
-        const token = jwt.sign({ user }, this.secret)
+        const token = jwt.sign(user, this.secret, { expiresIn: this.expirationTime })
         this.userTokens.push(token)
         return token
     }

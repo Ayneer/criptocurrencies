@@ -36,19 +36,19 @@ export class MongoDatabase implements IDatabase {
     }
 
     async createUser(user: User): Promise<User> {
-        return this.userModel.create(user)
+        return this.userModel.create(user).then(data => data?.toObject())
     }
 
     async getUser(userId: string): Promise<User> {
-        return this.userModel.findById(userId)
+        return this.userModel.findById(userId).then(data => data?.toObject())
     }
 
     async getUserByUserName(userName: string): Promise<User> {
-        const response = await this.userModel.find({ userName: userName })
-        return response[0]
+        const response = await this.userModel.find({ userName })
+        return response[0]?.toObject()
     }
 
     async updateUser(user: User): Promise<User> {
-        return this.userModel.updateOne({ id: user._id }, user)
+        return this.userModel.updateOne({ id: user._id }, user).then(data => data?.toObject())
     }
 }
