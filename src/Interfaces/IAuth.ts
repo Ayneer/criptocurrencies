@@ -6,4 +6,5 @@ export interface IAuth {
     getNewToken(user: User): string
     isValidToken(token: string): boolean
     removeToken(token: string): void
+    getUserData(token: string): User
 }

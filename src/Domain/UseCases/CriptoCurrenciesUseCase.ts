@@ -39,7 +39,7 @@ export class CriptoCurrenciesUseCase implements ICriptoCurrenciesUseCase {
         throw new Error('Invalid user or password')
     }
 
-    async getCriptoCurrencies(): Promise<CriptoCoin[]> {
+    async getCriptoCurrencies(preferredCurrency: string): Promise<CriptoCoin[]> {
         return [new CriptoCoin('', '', '', '', '', new Date())]
     }
 

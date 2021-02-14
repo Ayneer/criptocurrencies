@@ -6,14 +6,21 @@ export class User {
     public lastName: string
     public userName: string
     public password: string
-    public currencies?: CriptoCoin[]
-    public preferredCurrency?: CriptoCoin
+    public criptoCoins?: CriptoCoin[]
+    public preferredCurrency: string
 
-    constructor(id: string, name: string, lastName: string, userName: string, password: string) {
+    constructor(id: string,
+                name: string,
+                lastName: string,
+                userName: string,
+                password: string,
+                preferredCurrency: string
+    ) {
         this._id = id
         this.name = name
         this.lastName = lastName
         this.userName = userName
         this.password = password
+        this.preferredCurrency = preferredCurrency
     }
 }

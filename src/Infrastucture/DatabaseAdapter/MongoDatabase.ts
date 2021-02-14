@@ -27,7 +27,8 @@ export class MongoDatabase implements IDatabase {
             lastName: String,
             userName: String,
             password: String,
-            currencies: [{
+            preferredCurrency: String,
+            criptoCoins: [{
                 id: String,
                 symbol: String,
                 name: String

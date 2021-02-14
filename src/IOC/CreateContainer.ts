@@ -11,13 +11,29 @@ import { MongoDatabase } from '../Infrastucture/DatabaseAdapter/MongoDatabase'
 import { JwtAuth } from '../Infrastucture/AuthAdapter/JwtAuth'
 import { CriptoCurrenciesUseCase } from '../Domain/UseCases/CriptoCurrenciesUseCase'
 
-export const createContainer = (): Container => {
-    const container = new Container()
-    container.bind<IConfig>(TYPES.Config).toConstantValue(config)
-    container.bind<IServer>(TYPES.Server).to(ExpressServer)
-    container.bind<IDatabase>(TYPES.Database).to(MongoDatabase)
-    container.bind<IAuth>(TYPES.Auth).to(JwtAuth).inSingletonScope()
-    container.bind<ICriptoCurrenciesUseCase>(TYPES.CriptoCurrenciesUseCase).to(CriptoCurrenciesUseCase)
-
+let container: Container
+const getContainer = () => {
+    if (!container) {
+        container = new Container()
+        container.bind<IConfig>(TYPES.Config).toConstantValue(config)
+        container.bind<IServer>(TYPES.Server).to(ExpressServer)
+        container.bind<IDatabase>(TYPES.Database).to(MongoDatabase)
+        container.bind<IAuth>(TYPES.Auth).to(JwtAuth).inSingletonScope()
+        container.bind<ICriptoCurrenciesUseCase>(TYPES.CriptoCurrenciesUseCase).to(CriptoCurrenciesUseCase)
+    }
     return container
 }
+container = getContainer()
+
+export { container }
+
+// export const createContainer = (): Container => {
+//     const container = new Container()
+//     container.bind<IConfig>(TYPES.Config).toConstantValue(config)
+//     container.bind<IServer>(TYPES.Server).to(ExpressServer)
+//     container.bind<IDatabase>(TYPES.Database).to(MongoDatabase)
+//     container.bind<IAuth>(TYPES.Auth).to(JwtAuth).inSingletonScope()
+//     container.bind<ICriptoCurrenciesUseCase>(TYPES.CriptoCurrenciesUseCase).to(CriptoCurrenciesUseCase)
+//
+//     return container
+// }

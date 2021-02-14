@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import { inject, injectable } from 'inversify'
 import { TYPES } from '../../IOC/types'
 import bcrypt from 'bcrypt'
+import { Utils } from '../../Domain/Utils'
 
 @injectable()
 export class JwtAuth implements IAuth {
@@ -28,7 +29,7 @@ export class JwtAuth implements IAuth {
     }
 
     getNewToken(user: User): string {
-        const token = jwt.sign(user, this.secret, { expiresIn: this.expirationTime })
+        const token = jwt.sign(Utils.getUserResponse(user), this.secret, { expiresIn: this.expirationTime })
         this.userTokens.push(token)
         return token
     }
@@ -45,6 +46,27 @@ export class JwtAuth implements IAuth {
 
     removeToken(token: string): void {
         this.userTokens = this.userTokens.filter(curToken => curToken !== token)
+    }
+
+    getUserData(token: string): User {
+        const payload: any = jwt.decode(token)
+        const {
+            id,
+            name,
+            lastName,
+            userName,
+            preferredCurrency,
+            currencies
+        } = payload
+        const user = new User(id,
+            name,
+            lastName,
+            userName,
+            '',
+            preferredCurrency)
+        user.preferredCurrency = preferredCurrency
+        user.criptoCoins = currencies
+        return user
     }
 
 }
