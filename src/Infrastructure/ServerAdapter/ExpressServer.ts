@@ -5,7 +5,7 @@ import cors from 'cors'
 import { inject, injectable } from 'inversify'
 import { TYPES } from '../../IOC/types'
 import { IServer } from '../../Interfaces/IServer'
-import { ICriptoCurrenciesUseCase } from '../../Interfaces/ICriptoCurrenciesUseCase'
+import { ICriptocoinUseCase } from '../../Interfaces/ICriptocoinUseCase'
 import { User } from '../../Models/User'
 import { v4 as uuid } from 'uuid'
 import { Utils } from '../../Domain/Utils'
@@ -17,11 +17,11 @@ export class ExpressServer implements IServer {
 
     private app: Express
     private config: IConfig
-    private criptoCurrenciesUseCase: ICriptoCurrenciesUseCase
+    private criptoCurrenciesUseCase: ICriptocoinUseCase
     private auth: IAuth
 
     constructor(@inject(TYPES.Config) config: IConfig,
-                @inject(TYPES.CriptoCurrenciesUseCase) criptoCurrenciesUseCase: ICriptoCurrenciesUseCase,
+                @inject(TYPES.CriptocoinUseCase) criptoCurrenciesUseCase: ICriptocoinUseCase,
                 @inject(TYPES.Auth) auth: IAuth) {
         this.auth = auth
         this.app = express()
@@ -47,9 +47,13 @@ export class ExpressServer implements IServer {
         router.post('/login',
             Middlewares.validateLoginRequest,
             (req: Request, res: Response) => this.login(req, res))
-        router.get('/currencies',
+        router.get('/criptocoins',
             Middlewares.validateAuthorization,
-            (req: Request, res: Response) => this.getCurrencies(req, res))
+            (req: Request, res: Response) => this.getCriptocoins(req, res))
+        router.put('/criptocoins/:criptocoin',
+            Middlewares.validateAuthorization,
+            Middlewares.validateCriptocoinRequest,
+            ((req: Request, res: Response) => this.addCriptocoin(req, res)))
         return router
     }
 
@@ -78,12 +82,24 @@ export class ExpressServer implements IServer {
         }
     }
 
-    private async getCurrencies(req: Request, res: Response) {
+    private async getCriptocoins(req: Request, res: Response) {
         try {
             const token = req.get('authorization')
-            const user: User = await this.auth.getUserData(token ? token.split(' ')[1]: '')
-            const currencies = await this.criptoCurrenciesUseCase.getCriptoCurrencies(user.preferredCurrency)
-            res.json({ currencies })
+            const user = this.auth.getUserData(token ? token.split(' ')[1]: '')
+            const criptocoins = await this.criptoCurrenciesUseCase.getCriptoCurrencies(user.preferredCurrency)
+            res.json({ criptocoins })
+        } catch (error) {
+            res.status(404).json(error.message)
+        }
+    }
+
+    private async addCriptocoin(req: Request, res: Response) {
+        try {
+            const token = req.get('authorization')
+            const user: User = this.auth.getUserData(token ? token.split(' ')[1]: '')
+            const criptocoin = req.params.criptocoin
+            await this.criptoCurrenciesUseCase.addCriptocoinToUser(criptocoin, user._id)
+            res.status(200).json('coin added to user')
         } catch (error) {
             res.status(404).json(error.message)
         }

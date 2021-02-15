@@ -31,7 +31,10 @@ export class MongoDatabase implements IDatabase {
             criptoCoins: [{
                 id: String,
                 symbol: String,
-                name: String
+                name: String,
+                price: String,
+                image: String,
+                date: Date
             }]
         }
     }
@@ -49,7 +52,7 @@ export class MongoDatabase implements IDatabase {
         return response[0]?.toObject()
     }
 
-    async updateUser(user: User): Promise<User> {
-        return this.userModel.updateOne({ id: user._id }, user).then(data => data?.toObject())
+    async updateUser(user: User): Promise<void> {
+        return this.userModel.updateOne({ _id: user._id }, user)
     }
 }
