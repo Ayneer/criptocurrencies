@@ -3,15 +3,15 @@ import { TYPES } from './types'
 import { IAuth } from '../Interfaces/IAuth'
 import { IDatabase } from '../Interfaces/IDatabase'
 import { IServer } from '../Interfaces/IServer'
-import { ICriptocoinUseCase} from '../Interfaces/ICriptocoinUseCase'
+import { ICryptocoinUseCase} from '../Interfaces/ICryptocoinUseCase'
 import { ExpressServer } from '../Infrastructure/ServerAdapter/ExpressServer'
 import { IConfig } from '../Interfaces/IConfig'
 import { config } from '../Infrastructure/Config'
 import { MongoDatabase } from '../Infrastructure/DatabaseAdapter/MongoDatabase'
 import { JwtAuth } from '../Infrastructure/AuthAdapter/JwtAuth'
-import { CriptocoinUseCase } from '../Domain/UseCases/CriptocoinUseCase'
-import { CriptocoinServiceAxios } from '../Infrastructure/CriptocoinServiceAdapter/CriptocoinServiceAxios'
-import { ICriptocoinService } from '../Interfaces/ICriptocoinService'
+import { CryptocoinUseCase } from '../Domain/UseCases/CryptocoinUseCase'
+import { CryptocoinServiceAxios } from '../Infrastructure/CryptocoinServiceAdapter/CryptocoinServiceAxios'
+import { ICryptocoinService } from '../Interfaces/ICryptocoinService'
 
 let container: Container
 const getContainer = () => {
@@ -21,8 +21,8 @@ const getContainer = () => {
         container.bind<IServer>(TYPES.Server).to(ExpressServer)
         container.bind<IDatabase>(TYPES.Database).to(MongoDatabase)
         container.bind<IAuth>(TYPES.Auth).to(JwtAuth).inSingletonScope()
-        container.bind<ICriptocoinUseCase>(TYPES.CriptocoinUseCase).to(CriptocoinUseCase)
-        container.bind<ICriptocoinService>(TYPES.CriptocoinService).to(CriptocoinServiceAxios)
+        container.bind<ICryptocoinUseCase>(TYPES.CryptocoinUseCase).to(CryptocoinUseCase)
+        container.bind<ICryptocoinService>(TYPES.CryptocoinService).to(CryptocoinServiceAxios)
     }
     return container
 }
@@ -36,7 +36,7 @@ export { container }
 //     container.bind<IServer>(TYPES.Server).to(ExpressServer)
 //     container.bind<IDatabase>(TYPES.Database).to(MongoDatabase)
 //     container.bind<IAuth>(TYPES.Auth).to(JwtAuth).inSingletonScope()
-//     container.bind<ICriptocoinUseCase>(TYPES.CriptocoinUseCase).to(CriptocoinUseCase)
+//     container.bind<ICryptocoinUseCase>(TYPES.CryptocoinUseCase).to(CryptocoinUseCase)
 //
 //     return container
 // }

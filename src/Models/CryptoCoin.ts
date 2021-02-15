@@ -1,4 +1,4 @@
-export class CriptoCoin {
+export class CryptoCoin {
     public id: string
     public symbol: string
     public name: string

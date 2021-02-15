@@ -1,5 +1,5 @@
 {
-  "name": "criptocurrencies",
+  "name": "cryptocurrencies",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/daniel-uruena/criptocurrencies.git"
+    "url": "git+https://github.com/daniel-uruena/cryptocurrencies.git"
   },
   "author": "",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/daniel-uruena/criptocurrencies/issues"
+    "url": "https://github.com/daniel-uruena/cryptocurrencies/issues"
   },
-  "homepage": "https://github.com/daniel-uruena/criptocurrencies#readme",
+  "homepage": "https://github.com/daniel-uruena/cryptocurrencies#readme",
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/cors": "^2.8.9",

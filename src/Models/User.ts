@@ -1,4 +1,4 @@
-import { CriptoCoin } from './CriptoCoin'
+import { CryptoCoin } from './CryptoCoin'
 
 export class User {
     public _id: string
@@ -6,7 +6,7 @@ export class User {
     public lastName: string
     public userName: string
     public password: string
-    public criptoCoins: CriptoCoin[]
+    public cryptoCoins: CryptoCoin[]
     public preferredCurrency: string
 
     constructor(id: string,
@@ -22,6 +22,6 @@ export class User {
         this.userName = userName
         this.password = password
         this.preferredCurrency = preferredCurrency
-        this.criptoCoins = []
+        this.cryptoCoins = []
     }
 }

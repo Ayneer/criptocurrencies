@@ -13,10 +13,10 @@ const loginRequest = Joi.object({
     password: Joi.string().required()
 })
 
-const criptocoinRequest = Joi.string().required()
+const cryptocoinRequest = Joi.string().required()
 
 export {
     newUserRequest,
     loginRequest,
-    criptocoinRequest
+    cryptocoinRequest
 }

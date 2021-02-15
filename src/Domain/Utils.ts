@@ -7,7 +7,7 @@ export class Utils {
             name: user.name,
             lastName: user.lastName,
             userName: user.userName,
-            criptoCoins: user.criptoCoins,
+            cryptoCoins: user.cryptoCoins,
             preferredCurrency: user.preferredCurrency,
         }
     }

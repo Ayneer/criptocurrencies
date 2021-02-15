@@ -1,23 +1,23 @@
-import { CriptoCoin } from '../../Models/CriptoCoin'
+import { CryptoCoin } from '../../Models/CryptoCoin'
 import { User } from '../../Models/User'
 import { IAuth } from '../../Interfaces/IAuth'
 import { IDatabase } from '../../Interfaces/IDatabase'
-import { ICriptocoinUseCase } from '../../Interfaces/ICriptocoinUseCase'
+import { ICryptocoinUseCase } from '../../Interfaces/ICryptocoinUseCase'
 import { inject, injectable } from 'inversify'
 import { TYPES } from '../../IOC/types'
-import { ICriptocoinService } from '../../Interfaces/ICriptocoinService'
+import { ICryptocoinService } from '../../Interfaces/ICryptocoinService'
 
 @injectable()
-export class CriptocoinUseCase implements ICriptocoinUseCase {
+export class CryptocoinUseCase implements ICryptocoinUseCase {
 
     private database: IDatabase
     private auth: IAuth
-    private criptocoinService: ICriptocoinService
+    private cryptocoinService: ICryptocoinService
 
     constructor(@inject(TYPES.Database) database: IDatabase,
                 @inject(TYPES.Auth) auth: IAuth,
-                @inject(TYPES.CriptocoinService) criptocoinService: ICriptocoinService) {
-        this.criptocoinService = criptocoinService
+                @inject(TYPES.CryptocoinService) cryptocoinService: ICryptocoinService) {
+        this.cryptocoinService = cryptocoinService
         this.database = database
         this.auth = auth
     }
@@ -43,24 +43,24 @@ export class CriptocoinUseCase implements ICriptocoinUseCase {
         throw new Error('Invalid user or password')
     }
 
-    async getCriptoCurrencies(preferredCurrency: string): Promise<CriptoCoin[]> {
-        return await this.criptocoinService.getCriptocoinsList(preferredCurrency)
+    async getCryptoCurrencies(preferredCurrency: string): Promise<CryptoCoin[]> {
+        return await this.cryptocoinService.getCryptocoinsList(preferredCurrency)
     }
 
-    async getUserCurrencies(limit: number): Promise<CriptoCoin[]> {
-        return [new CriptoCoin('', '', '', '', '', new Date())]
+    async getUserCurrencies(limit: number): Promise<CryptoCoin[]> {
+        return [new CryptoCoin('', '', '', '', '', new Date())]
     }
 
-    async addCriptocoinToUser(criptocoinId: string, userId: string): Promise<void> {
+    async addCryptocoinToUser(cryptocoinId: string, userId: string): Promise<void> {
         const user = await this.database.getUser(userId)
-        const criptocoin = await this.criptocoinService.getUserCriptocoins(user.preferredCurrency, [criptocoinId])
-        if (criptocoin && criptocoin.length > 0) {
-            user.criptoCoins.push(criptocoin[0])
+        const cryptocoin = await this.cryptocoinService.getUserCryptocoins(user.preferredCurrency, [cryptocoinId])
+        if (cryptocoin && cryptocoin.length > 0) {
+            user.cryptoCoins.push(cryptocoin[0])
             await this.database.updateUser(user)
         }
     }
 
-    async setPreferredCurrency(currency: CriptoCoin): Promise<void> {
+    async setPreferredCurrency(currency: CryptoCoin): Promise<void> {
 
     }
 }

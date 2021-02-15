@@ -2,7 +2,7 @@ export interface IConfig {
     serverPort: number
     secretToken: string
     expirationMinutes: number
-    criptocoinUrl: string
+    cryptocoinUrl: string
     database: {
         protocol: string
         host: string

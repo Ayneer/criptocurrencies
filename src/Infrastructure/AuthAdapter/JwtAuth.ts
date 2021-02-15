@@ -30,7 +30,7 @@ export class JwtAuth implements IAuth {
 
     getNewToken(user: User): string {
         const userToken = Utils.getUserResponse(user)
-        userToken.criptoCoins = []
+        userToken.cryptoCoins = []
         const token = jwt.sign(userToken, this.secret, { expiresIn: this.expirationTime })
         this.userTokens.push(token)
         return token
@@ -58,7 +58,7 @@ export class JwtAuth implements IAuth {
             lastName,
             userName,
             preferredCurrency,
-            criptoCoins
+            cryptoCoins
         } = payload
         const user = new User(_id,
             name,
@@ -67,7 +67,7 @@ export class JwtAuth implements IAuth {
             '',
             preferredCurrency)
         user.preferredCurrency = preferredCurrency
-        user.criptoCoins = criptoCoins
+        user.cryptoCoins = cryptoCoins
         return user
     }
 
