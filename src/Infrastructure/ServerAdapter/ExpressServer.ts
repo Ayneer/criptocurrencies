@@ -54,6 +54,10 @@ export class ExpressServer implements IServer {
             Middlewares.validateAuthorization,
             Middlewares.validateCryptocoinRequest,
             ((req: Request, res: Response) => this.addCryptocoin(req, res)))
+        router.get('/userCryptocoins',
+            Middlewares.validateAuthorization,
+            Middlewares.validateUserCryptocoinsRequets,
+            (req: Request, res: Response) => this.getUserCryptocoins(req, res))
         return router
     }
 
@@ -99,7 +103,20 @@ export class ExpressServer implements IServer {
             const user: User = this.auth.getUserData(token ? token.split(' ')[1]: '')
             const cryptocoin = req.params.cryptocoin
             await this.cryptoCurrenciesUseCase.addCryptocoinToUser(cryptocoin, user._id)
-            res.status(200).json('coin added to user')
+            res.json('coin added to user')
+        } catch (error) {
+            res.status(400).json(error.message)
+        }
+    }
+
+    private async getUserCryptocoins(req: Request, res: Response) {
+        try {
+            const token = req.get('authorization')
+            const user: User = this.auth.getUserData(token ? token.split(' ')[1]: '')
+            const limit: any = req.query.limit
+            const order: any = req.query.order
+            const cryptocoins = await this.cryptoCurrenciesUseCase.getUserCurrencies(limit, user._id, order)
+            res.json({ cryptocoins })
         } catch (error) {
             res.status(404).json(error.message)
         }

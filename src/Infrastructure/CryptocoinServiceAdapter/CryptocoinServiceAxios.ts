@@ -21,7 +21,8 @@ export class CryptocoinServiceAxios implements ICryptocoinService {
 
     public async getUserCryptocoins(preferredCurrency: string, cryptocoins: string[]): Promise<CryptoCoin[]> {
         const ids = cryptocoins.join(',')
-        const response = await axios.get(`${this.cryptocoinUrl}/coins/markets?vs_currency=${preferredCurrency}&ids=${ids}`)
+        const url = `${this.cryptocoinUrl}/coins/markets?vs_currency=${preferredCurrency}&ids=${ids}&per_page=250&order=market_cap_desc`
+        const response = await axios.get(url)
         return this.getResponse(response)
     }
 

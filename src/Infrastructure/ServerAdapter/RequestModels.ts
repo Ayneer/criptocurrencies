@@ -13,10 +13,18 @@ const loginRequest = Joi.object({
     password: Joi.string().required()
 })
 
-const cryptocoinRequest = Joi.string().required()
+const cryptocoinRequest = Joi.object({
+    cryptocoin: Joi.string().required()
+})
+
+const userCryptocoinsRequest = Joi.object({
+    limit: Joi.number().min(1).max(25).required(),
+    order: Joi.string().valid('asc', 'desc')
+})
 
 export {
     newUserRequest,
     loginRequest,
-    cryptocoinRequest
+    cryptocoinRequest,
+    userCryptocoinsRequest
 }

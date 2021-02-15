@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { TYPES } from '../../IOC/types'
 import { IAuth } from '../../Interfaces/IAuth'
 import { container } from '../../IOC/CreateContainer'
-import { cryptocoinRequest, loginRequest, newUserRequest } from './RequestModels'
+import { cryptocoinRequest, loginRequest, newUserRequest, userCryptocoinsRequest } from './RequestModels'
 
 // declare global {
 //     namespace Express {
@@ -43,7 +43,16 @@ export class Middlewares {
     }
 
     public static validateCryptocoinRequest(req: Request, res: Response, next: NextFunction) {
-        const { error } = cryptocoinRequest.validate(req.params.cryptocoin)
+        const { error } = cryptocoinRequest.validate(req.params)
+        if (error) {
+            res.status(400).json(error?.details[0].message)
+            return
+        }
+        next()
+    }
+
+    public static validateUserCryptocoinsRequets(req: Request, res: Response, next: NextFunction) {
+        const { error } = userCryptocoinsRequest.validate(req.query)
         if (error) {
             res.status(400).json(error?.details[0].message)
             return
