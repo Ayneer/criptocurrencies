@@ -90,7 +90,7 @@ export class ExpressServer implements IServer {
         try {
             const token = req.get('authorization')
             const user = this.auth.getUserData(token ? token.split(' ')[1]: '')
-            const cryptocoins = await this.cryptoCurrenciesUseCase.getCryptoCurrencies(user.preferredCurrency)
+            const cryptocoins = await this.cryptoCurrenciesUseCase.getCryptocoins(user.preferredCurrency)
             res.json({ cryptocoins })
         } catch (error) {
             res.status(404).json(error.message)
@@ -115,7 +115,7 @@ export class ExpressServer implements IServer {
             const user: User = this.auth.getUserData(token ? token.split(' ')[1]: '')
             const limit: any = req.query.limit
             const order: any = req.query.order
-            const cryptocoins = await this.cryptoCurrenciesUseCase.getUserCurrencies(limit, user._id, order)
+            const cryptocoins = await this.cryptoCurrenciesUseCase.getUserCryptocoins(limit, user._id, order)
             res.json({ cryptocoins })
         } catch (error) {
             res.status(404).json(error.message)

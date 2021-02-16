@@ -3,7 +3,7 @@
       "module": "commonjs",
       "target": "es5",
       "lib": ["es6", "dom"],
-      "types": ["reflect-metadata"],
+      "types": ["reflect-metadata", "jest"],
       "sourceMap": true,
       "outDir": "./dist",
       "strict": true,

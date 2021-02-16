@@ -32,7 +32,7 @@ export class MongoDatabase implements IDatabase {
                 id: String,
                 symbol: String,
                 name: String,
-                price: String,
+                price: Number,
                 image: String,
                 date: Date
             }]
@@ -43,11 +43,11 @@ export class MongoDatabase implements IDatabase {
         return this.userModel.create(user).then(data => data?.toObject())
     }
 
-    async getUser(userId: string): Promise<User> {
+    async getUser(userId: string): Promise<User | undefined> {
         return this.userModel.findById(userId).then(data => data?.toObject())
     }
 
-    async getUserByUserName(userName: string): Promise<User> {
+    async getUserByUserName(userName: string): Promise<User | undefined> {
         const response = await this.userModel.find({ userName })
         return response[0]?.toObject()
     }
