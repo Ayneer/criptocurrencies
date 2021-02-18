@@ -9,7 +9,7 @@ export const config: IConfig = {
         protocol: process.env.DB_PROTOCOL || 'mongodb',
         host: process.env.DB_HOST || 'localhost',
         port: parseInt(process.env.DB_PORT || '27017'),
-        dbName: process.env.DB_NAME || 'cryptocurrencies',
+        dbName: process.env.DB_NAME || 'cryptocoins',
         table: 'users'
     }
 }

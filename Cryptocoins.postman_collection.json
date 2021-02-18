@@ -1,0 +1,222 @@
+{
+	"info": {
+		"_postman_id": "ba9d1ae4-b356-4265-a5b0-3580d5b9ec21",
+		"name": "Cryptocoins",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Healthcheck",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/cryptocoins/v1/api/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cryptocoins",
+						"v1",
+						"api",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign in",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Daniel\",\r\n    \"lastName\": \"Urueña\",\r\n    \"userName\": \"Kurono\",\r\n    \"password\": \"As1+1212\",\r\n    \"preferredCurrency\": \"eur\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/cryptocoins/v1/api/signin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cryptocoins",
+						"v1",
+						"api",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userName\": \"Kurono\",\r\n    \"password\": \"As1+1212\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/cryptocoins/v1/api/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cryptocoins",
+						"v1",
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get cryptocoins",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI3NGU0MTI3Ny0xOWNkLTRhNTAtODRhOC02NDAzZTA0NzQ1YTciLCJuYW1lIjoiRGFuaWVsIiwibGFzdE5hbWUiOiJVcnVlw7FhIiwidXNlck5hbWUiOiJLdXJvbm8iLCJjcnlwdG9Db2lucyI6W10sInByZWZlcnJlZEN1cnJlbmN5IjoiZXVyIiwiaWF0IjoxNjEzNjEyMzIyLCJleHAiOjE2MTM2MTU5MjJ9.mWtUGzQEr6miLUCWc8C11tb8ZJEeKMcQEWtkfna_Upw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/cryptocoins/v1/api/cryptocoins",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cryptocoins",
+						"v1",
+						"api",
+						"cryptocoins"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add cryptocoin to user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI3NGU0MTI3Ny0xOWNkLTRhNTAtODRhOC02NDAzZTA0NzQ1YTciLCJuYW1lIjoiRGFuaWVsIiwibGFzdE5hbWUiOiJVcnVlw7FhIiwidXNlck5hbWUiOiJLdXJvbm8iLCJjcnlwdG9Db2lucyI6W10sInByZWZlcnJlZEN1cnJlbmN5IjoiZXVyIiwiaWF0IjoxNjEzNjEyMzIyLCJleHAiOjE2MTM2MTU5MjJ9.mWtUGzQEr6miLUCWc8C11tb8ZJEeKMcQEWtkfna_Upw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/cryptocoins/v1/api/cryptocoins/cardano",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cryptocoins",
+						"v1",
+						"api",
+						"cryptocoins",
+						"cardano"
+					],
+					"query": [
+						{
+							"key": "order",
+							"value": "market_cap_desc",
+							"disabled": true
+						},
+						{
+							"key": "per_page",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "sparkline",
+							"value": "false",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user cryptocoins",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI3NGU0MTI3Ny0xOWNkLTRhNTAtODRhOC02NDAzZTA0NzQ1YTciLCJuYW1lIjoiRGFuaWVsIiwibGFzdE5hbWUiOiJVcnVlw7FhIiwidXNlck5hbWUiOiJLdXJvbm8iLCJjcnlwdG9Db2lucyI6W10sInByZWZlcnJlZEN1cnJlbmN5IjoiZXVyIiwiaWF0IjoxNjEzNjEyMzIyLCJleHAiOjE2MTM2MTU5MjJ9.mWtUGzQEr6miLUCWc8C11tb8ZJEeKMcQEWtkfna_Upw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/cryptocoins/v1/api/usercryptocoins?limit=4&order=desc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cryptocoins",
+						"v1",
+						"api",
+						"usercryptocoins"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "4"
+						},
+						{
+							"key": "order",
+							"value": "desc"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
