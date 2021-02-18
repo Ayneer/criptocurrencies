@@ -61,11 +61,11 @@ export class ExpressServer implements IServer {
         return router
     }
 
-    private async healthCheck(req: Request, res: Response) {
+    public async healthCheck(req: Request, res: Response) {
         res.json('OK')
     }
 
-    private async registerNewUser(req: Request, res: Response) {
+    public async registerNewUser(req: Request, res: Response) {
         try {
             const { name, lastName, userName, password, preferredCurrency } = req.body
             const user = new User(uuid(), name, lastName, userName, password, preferredCurrency)
@@ -76,7 +76,7 @@ export class ExpressServer implements IServer {
         }
     }
 
-    private async login(req: Request, res: Response) {
+    public async login(req: Request, res: Response) {
         try {
             const { userName, password } = req.body
             const token = await this.cryptoCurrenciesUseCase.login(userName, password)
@@ -86,10 +86,9 @@ export class ExpressServer implements IServer {
         }
     }
 
-    private async getCryptocoins(req: Request, res: Response) {
+    public async getCryptocoins(req: Request, res: Response) {
         try {
-            const token = req.get('authorization')
-            const user = this.auth.getUserData(token ? token.split(' ')[1]: '')
+            const user: User = this.getUserData(req)
             const cryptocoins = await this.cryptoCurrenciesUseCase.getCryptocoins(user.preferredCurrency)
             res.json({ cryptocoins })
         } catch (error) {
@@ -97,10 +96,9 @@ export class ExpressServer implements IServer {
         }
     }
 
-    private async addCryptocoin(req: Request, res: Response) {
+    public async addCryptocoin(req: Request, res: Response) {
         try {
-            const token = req.get('authorization')
-            const user: User = this.auth.getUserData(token ? token.split(' ')[1]: '')
+            const user: User = this.getUserData(req)
             const cryptocoin = req.params.cryptocoin
             await this.cryptoCurrenciesUseCase.addCryptocoinToUser(cryptocoin, user._id)
             res.json('coin added to user')
@@ -109,10 +107,9 @@ export class ExpressServer implements IServer {
         }
     }
 
-    private async getUserCryptocoins(req: Request, res: Response) {
+    public async getUserCryptocoins(req: Request, res: Response) {
         try {
-            const token = req.get('authorization')
-            const user: User = this.auth.getUserData(token ? token.split(' ')[1]: '')
+            const user: User = this.getUserData(req)
             const limit: any = req.query.limit
             const order: any = req.query.order
             const cryptocoins = await this.cryptoCurrenciesUseCase.getUserCryptocoins(limit, user._id, order)
@@ -120,5 +117,10 @@ export class ExpressServer implements IServer {
         } catch (error) {
             res.status(404).json(error.message)
         }
+    }
+
+    private getUserData(req: Request) {
+        const token = req.get('authorization')
+        return this.auth.getUserData(token ? token.split(' ')[1]: '')
     }
 }

@@ -9,8 +9,6 @@ import { CryptoCoin } from '../../../Models/CryptoCoin'
 import { ICryptocoinUseCase } from '../../../Interfaces/ICryptocoinUseCase'
 import 'reflect-metadata'
 
-
-
 describe('Cryptocoin use case', () => {
     const cryptocoinTest = new CryptoCoin('id', 'symbol', 'name', 100, 'image', new Date())
     let userTest: User = new User('id', 'name', 'lastname', 'userName', 'password', 'eur')

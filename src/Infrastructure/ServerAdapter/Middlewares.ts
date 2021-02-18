@@ -4,14 +4,6 @@ import { IAuth } from '../../Interfaces/IAuth'
 import { container } from '../../IOC/CreateContainer'
 import { cryptocoinRequest, loginRequest, newUserRequest, userCryptocoinsRequest } from './RequestModels'
 
-// declare global {
-//     namespace Express {
-//         interface Request {
-//             user: any
-//         }
-//     }
-// }
-
 export class Middlewares {
 
     public static validateNewUserRequest(req: Request, res: Response, next: NextFunction) {

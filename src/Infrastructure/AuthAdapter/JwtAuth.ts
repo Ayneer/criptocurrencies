@@ -6,6 +6,7 @@ import { inject, injectable } from 'inversify'
 import { TYPES } from '../../IOC/types'
 import bcrypt from 'bcrypt'
 import { Utils } from '../../Domain/Utils'
+import 'reflect-metadata'
 
 @injectable()
 export class JwtAuth implements IAuth {

@@ -27,7 +27,10 @@ export default {
         "!**/jest.config.ts/**",
         "!**/node_modules/**",
         "!**/vendor/**",
-        "!**/dist/**"
+        "!**/dist/**",
+        "!**/Interfaces/**",
+        "!index.ts",
+        "!src/IOC/CreateContainer.ts"
     ],
 
     // The directory where Jest should output its coverage files

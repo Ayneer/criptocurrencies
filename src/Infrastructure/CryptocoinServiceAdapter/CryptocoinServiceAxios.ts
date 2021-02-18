@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from 'axios'
 import { CryptoCoin } from '../../Models/CryptoCoin'
 import { TYPES } from '../../IOC/types'
 import { IConfig } from '../../Interfaces/IConfig'
+import 'reflect-metadata'
 
 @injectable()
 export class CryptocoinServiceAxios implements ICryptocoinService {

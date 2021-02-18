@@ -21,7 +21,7 @@ const getContainer = () => {
         container.bind<IServer>(TYPES.Server).to(ExpressServer)
         container.bind<IDatabase>(TYPES.Database).to(MongoDatabase)
         container.bind<IAuth>(TYPES.Auth).to(JwtAuth).inSingletonScope()
-        container.bind<ICryptocoinUseCase>(TYPES.CryptocoinUseCase).to(CryptocoinUseCase)
+        container.bind<ICryptocoinUseCase>(TYPES.CryptocoinUseCase).to(CryptocoinUseCase).inSingletonScope()
         container.bind<ICryptocoinService>(TYPES.CryptocoinService).to(CryptocoinServiceAxios)
     }
     return container
@@ -29,14 +29,3 @@ const getContainer = () => {
 container = getContainer()
 
 export { container }
-
-// export const createContainer = (): Container => {
-//     const container = new Container()
-//     container.bind<IConfig>(TYPES.Config).toConstantValue(config)
-//     container.bind<IServer>(TYPES.Server).to(ExpressServer)
-//     container.bind<IDatabase>(TYPES.Database).to(MongoDatabase)
-//     container.bind<IAuth>(TYPES.Auth).to(JwtAuth).inSingletonScope()
-//     container.bind<ICryptocoinUseCase>(TYPES.CryptocoinUseCase).to(CryptocoinUseCase)
-//
-//     return container
-// }

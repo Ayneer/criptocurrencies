@@ -4,6 +4,7 @@ import { IDatabase } from '../../Interfaces/IDatabase'
 import { inject, injectable } from 'inversify'
 import mongoose, { Model } from 'mongoose'
 import { TYPES } from '../../IOC/types'
+import 'reflect-metadata'
 
 
 @injectable()
