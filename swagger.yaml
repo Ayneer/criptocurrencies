@@ -1,0 +1,252 @@
+openapi: 3.0.1
+info:
+    title: Cryptocoin API
+    description: 'Este servicio permite crear usuarios, realizar login y consultar y administrar las criptomonedas a las que el usuario desee hacerles seguimiento.'
+    contact:
+        email: daniel.uruena@hotmail.com
+    license:
+        name: GPL 3.0
+        url: http://www.gnu.org/licenses/gpl-3.0.html
+    version: 1.0.0
+externalDocs:
+    description: Find out more about Swagger
+    url: http://swagger.io
+servers:
+    - url: http://localhost:8080/cryptocoins/v1/api
+tags:
+    - name: Autenticación y autorización
+      description: Capacidades para registrar nuevos usuarios y login
+    - name: Cryptocoins
+      description: Operaciones sobre las criptomonedas
+paths:
+    /signin:
+        post:
+            tags:
+                - Autenticación y autorización
+            summary: Registrar usuario
+            description: This operación permite crear un usuario para la aplicación.
+            operationId: createUser
+            requestBody:
+                description: Objeto de usuario con los datos mínimos
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/UserRequest'
+                required: true
+            responses:
+                200:
+                    description: Respuesta exitosa con los datos del usuario registrado
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UserResponse'
+                x-Error:
+                    description: Respuesta en caso de que falle la petición
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /login:
+        post:
+            tags:
+                - Autenticación y autorización
+            summary: Valida las credenciales de un usuario y retorna un token si son válidas
+            operationId: login
+            requestBody:
+                description: Credenciales del usuario
+                content:
+                    'application/json':
+                        schema:
+                            $ref: '#/components/schemas/Credentials'
+                required: true
+            responses:
+                200:
+                    description: Respuesta exitosa con el token de autorización
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Token'
+                x-Error:
+                    description: Respuesta en caso de que falle la petición
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /cryptocoins:
+        get:
+            tags:
+                - Cryptocoins
+            summary: Consulta las criptomonedas disponibles para que el usuario agregue a su lista de criptomonedas
+            operationId: getCryptocoins
+            parameters:
+                - in: header
+                  name: Authorization
+                  description: Cabecera con el token de autorización otorgado por el login
+                  schema:
+                      example: 'Bearer ejy346lk4joisdfg9s8mnnvb098b9v6xc09...'
+                  required: true
+            responses:
+                200:
+                    description: Respuesta exitosa con la lista de criptomonedas disponibles
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Cryptocoin'
+                x-Error:
+                    description: Respuesta en caso de que falle la petición
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /cryptocoins/{cryptocoinId}:
+        put:
+            tags:
+                - Cryptocoins
+            summary: Permite agregar una criptomoneda a la lista de criptomonedas seguidas por el usuario
+            operationId: addCryptocoin
+            parameters:
+                - in: header
+                  name: Authorization
+                  description: Cabecera con el token de autorización otorgado por el login
+                  schema:
+                      example: 'Bearer ejy346lk4joisdfg9s8mnnvb098b9v6xc09...'
+                  required: true
+                - in: path
+                  name: cryptocoinId
+                  description: Identificador de la criptomoneda
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                200:
+                    description: Respuesta exitosa
+                    content:
+                        application/json:
+                            schema:
+                                type: string
+                                example: 'coin added to user'
+                x-Error:
+                    description: Respuesta en caso de que falle la petición
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+    /userCryptocoins:
+        get:
+            tags:
+                - Cryptocoins
+            summary: Permite consultar las criptomonedas agregadas por el usuario
+            operationId: getUserCryptocoins
+            parameters:
+                - in: header
+                  name: Authorization
+                  description: Cabecera con el token de autorización otorgado por el login
+                  schema:
+                      example: 'Bearer ejy346lk4joisdfg9s8mnnvb098b9v6xc09...'
+                  required: true
+                - in: query
+                  name: limit
+                  description: limite de monedas a consultar
+                  schema:
+                      type: integer
+                      format: Int64
+                - in: query
+                  name: order
+                  description: orden en que se desean los resultados
+                  schema:
+                      type: string
+                      example: 'asc or desc'
+            responses:
+                200:
+                    description: Respuesta exitosa con la lista de criptomonedas disponibles
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Cryptocoin'
+                x-Error:
+                    description: Respuesta en caso de que falle la petición
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+components:
+    schemas:
+        Credentials:
+            type: object
+            properties:
+                userName:
+                    type: string
+                password:
+                    type: string
+            xml:
+                name: Credentials
+        Cryptocoin:
+            type: object
+            properties:
+                id:
+                    type: string
+                symbol:
+                    type: string
+                name:
+                    type: string
+                price:
+                    type: integer
+                image:
+                    type: string
+                date:
+                    type: string
+                    format: date-time
+            xml:
+                name: Cryptocoin
+        UserRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+                name:
+                    type: string
+                lastName:
+                    type: string
+                password:
+                    type: string
+                preferredCurrency:
+                    type: string
+            xml:
+                name: UserRequest
+        UserResponse:
+            type: object
+            properties:
+                _id:
+                    type: string
+                username:
+                    type: string
+                name:
+                    type: string
+                lastName:
+                    type: string
+                preferredCurrency:
+                    type: string
+                cryptocoins:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Cryptocoin'
+            xml:
+                name: UserResponse
+        Token:
+            type: object
+            properties:
+                token:
+                    type: string
+            xml:
+                name: Token
+        Error:
+            type: object
+            properties:
+                error:
+                    type: string
+            xml:
+                name: Error
