@@ -51,4 +51,11 @@ export class Middlewares {
         }
         next()
     }
+
+    public static errorHandler(err: any, req: Request, res: Response, next: NextFunction) {
+        const status = err.status || 500
+        const responseBody = { error: err.message }
+        res.status(status).json(responseBody)
+        next()
+    }
 }

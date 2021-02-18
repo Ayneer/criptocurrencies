@@ -1,4 +1,6 @@
 import { Middlewares } from '../Middlewares'
+import { CryptocoinError } from '../../../Models/CryptocoinError'
+import { ErrorType } from '../../../Models/ErrorType'
 
 jest.mock('../../../IOC/CreateContainer', () => {
     return {
@@ -134,5 +136,14 @@ describe('Middlewares server adapter', () => {
 
         expect(res.status).toHaveBeenCalledWith(400)
         expect(json).toHaveBeenCalledWith('"limit" is required')
+    })
+
+    test('should send error response when error handler middleware receive an error', () => {
+        const error = new CryptocoinError(ErrorType.EXISTING_USER, null)
+
+        Middlewares.errorHandler(error, req, res, next)
+
+        expect(res.status).toHaveBeenCalledWith(400)
+        expect(json).toHaveBeenCalledWith({ error: error.message })
     })
 })

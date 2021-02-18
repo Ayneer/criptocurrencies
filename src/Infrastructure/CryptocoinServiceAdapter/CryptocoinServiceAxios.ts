@@ -5,6 +5,8 @@ import { CryptoCoin } from '../../Models/CryptoCoin'
 import { TYPES } from '../../IOC/types'
 import { IConfig } from '../../Interfaces/IConfig'
 import 'reflect-metadata'
+import { CryptocoinError } from '../../Models/CryptocoinError'
+import { ErrorType } from '../../Models/ErrorType'
 
 @injectable()
 export class CryptocoinServiceAxios implements ICryptocoinService {
@@ -29,7 +31,7 @@ export class CryptocoinServiceAxios implements ICryptocoinService {
 
     private getResponse(response: AxiosResponse) {
         if (response.statusText !== 'OK') {
-            throw new Error('cryptocurrencies service not available')
+            throw new CryptocoinError(ErrorType.CRYPTOCOIN_SERVICE_ERROR, response.data)
         }
         const cryptocoins: CryptoCoin[] = []
         response.data.forEach((cryptocoin: any) => {

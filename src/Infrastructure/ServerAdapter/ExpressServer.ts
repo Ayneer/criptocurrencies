@@ -1,6 +1,6 @@
 import { IConfig } from '../../Interfaces/IConfig'
 import 'reflect-metadata'
-import express, { Express, Request, Response, Router } from 'express'
+import express, { Express, NextFunction, Request, Response, Router } from 'express'
 import cors from 'cors'
 import { inject, injectable } from 'inversify'
 import { TYPES } from '../../IOC/types'
@@ -33,6 +33,7 @@ export class ExpressServer implements IServer {
 
     start(): void {
         this.app.use('/cryptocoins/v1/api', this.createRoutes())
+        this.app.use(Middlewares.errorHandler)
         this.app.listen(this.config.serverPort, () => {
             console.log(`Server running in http://localhost:${this.config.serverPort}`)
         })
@@ -43,21 +44,21 @@ export class ExpressServer implements IServer {
         router.get('/health', (req: Request, res: Response) => this.healthCheck(req, res))
         router.post('/signIn',
             Middlewares.validateNewUserRequest,
-            (req: Request, res: Response) => this.registerNewUser(req, res))
+            (req: Request, res: Response, next: NextFunction) => this.registerNewUser(req, res, next))
         router.post('/login',
             Middlewares.validateLoginRequest,
-            (req: Request, res: Response) => this.login(req, res))
+            (req: Request, res: Response, next: NextFunction) => this.login(req, res, next))
         router.get('/cryptocoins',
             Middlewares.validateAuthorization,
-            (req: Request, res: Response) => this.getCryptocoins(req, res))
+            (req: Request, res: Response, next: NextFunction) => this.getCryptocoins(req, res, next))
         router.put('/cryptocoins/:cryptocoin',
             Middlewares.validateAuthorization,
             Middlewares.validateCryptocoinRequest,
-            ((req: Request, res: Response) => this.addCryptocoin(req, res)))
+            ((req: Request, res: Response, next: NextFunction) => this.addCryptocoin(req, res, next)))
         router.get('/userCryptocoins',
             Middlewares.validateAuthorization,
             Middlewares.validateUserCryptocoinsRequets,
-            (req: Request, res: Response) => this.getUserCryptocoins(req, res))
+            (req: Request, res: Response, next: NextFunction) => this.getUserCryptocoins(req, res, next))
         return router
     }
 
@@ -65,49 +66,49 @@ export class ExpressServer implements IServer {
         res.json('OK')
     }
 
-    public async registerNewUser(req: Request, res: Response) {
+    public async registerNewUser(req: Request, res: Response, next: NextFunction) {
         try {
             const { name, lastName, userName, password, preferredCurrency } = req.body
             const user = new User(uuid(), name, lastName, userName, password, preferredCurrency)
             const savedUser = await this.cryptoCurrenciesUseCase.registerUser(user)
             res.json(Utils.getUserResponse(savedUser))
         } catch (error) {
-            res.status(400).json(error.message)
+            next(error)
         }
     }
 
-    public async login(req: Request, res: Response) {
+    public async login(req: Request, res: Response, next: NextFunction) {
         try {
             const { userName, password } = req.body
             const token = await this.cryptoCurrenciesUseCase.login(userName, password)
             res.json({ token })
         } catch (error) {
-            res.status(401).json(error.message)
+            next(error)
         }
     }
 
-    public async getCryptocoins(req: Request, res: Response) {
+    public async getCryptocoins(req: Request, res: Response, next: NextFunction) {
         try {
             const user: User = this.getUserData(req)
             const cryptocoins = await this.cryptoCurrenciesUseCase.getCryptocoins(user.preferredCurrency)
             res.json({ cryptocoins })
         } catch (error) {
-            res.status(404).json(error.message)
+            next(error)
         }
     }
 
-    public async addCryptocoin(req: Request, res: Response) {
+    public async addCryptocoin(req: Request, res: Response, next: NextFunction) {
         try {
             const user: User = this.getUserData(req)
             const cryptocoin = req.params.cryptocoin
             await this.cryptoCurrenciesUseCase.addCryptocoinToUser(cryptocoin, user._id)
             res.json('coin added to user')
         } catch (error) {
-            res.status(400).json(error.message)
+            next(error)
         }
     }
 
-    public async getUserCryptocoins(req: Request, res: Response) {
+    public async getUserCryptocoins(req: Request, res: Response, next: NextFunction) {
         try {
             const user: User = this.getUserData(req)
             const limit: any = req.query.limit
@@ -115,7 +116,7 @@ export class ExpressServer implements IServer {
             const cryptocoins = await this.cryptoCurrenciesUseCase.getUserCryptocoins(limit, user._id, order)
             res.json({ cryptocoins })
         } catch (error) {
-            res.status(404).json(error.message)
+            next(error)
         }
     }
 

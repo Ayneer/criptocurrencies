@@ -7,10 +7,13 @@ import { CryptoCoin } from '../../../Models/CryptoCoin'
 import { TYPES } from '../../../IOC/types'
 import { IServer } from '../../../Interfaces/IServer'
 import { ExpressServer } from '../ExpressServer'
+import { CryptocoinError } from '../../../Models/CryptocoinError'
+import { ErrorType } from '../../../Models/ErrorType'
 
 describe('Express server adapter', () => {
     let req: any
     let res: any
+    const next = jest.fn()
     const json = jest.fn()
     const cryptocoinTest = new CryptoCoin('id', 'symbol', 'name', 100, 'image', new Date())
     let userTest: User = new User('id', 'name', 'lastname', 'userName', 'password', 'eur')
@@ -63,28 +66,28 @@ describe('Express server adapter', () => {
 
         getCryptocoins(preferredCurrency: string): Promise<CryptoCoin[]> {
             if (preferredCurrency === 'error') {
-                throw new Error('error requesting cryptocoins to service')
+                throw new CryptocoinError(ErrorType.CRYPTOCOIN_SERVICE_ERROR, null)
             }
             return Promise.resolve([cryptocoinTest])
         }
 
         getUserCryptocoins(limit: number, userId: string, order: string): Promise<CryptoCoin[]> {
             if (userId === 'error') {
-                throw new Error('error requesting cryptocoins to service')
+                throw new CryptocoinError(ErrorType.CRYPTOCOIN_SERVICE_ERROR, null)
             }
             return Promise.resolve([cryptocoinTest])
         }
 
         login(userName: string, password: string): Promise<string> {
             if (userName === 'error') {
-                throw new Error('incorrect user or password')
+                throw new CryptocoinError(ErrorType.INVALID_CREDENTIALS, null)
             }
             return Promise.resolve('token')
         }
 
         registerUser(user: User): Promise<User> {
             if (user.name === 'error') {
-                throw new Error('error creating user')
+                throw new CryptocoinError(ErrorType.EXISTING_USER, null)
             }
             return Promise.resolve(userTest)
         }
@@ -137,7 +140,7 @@ describe('Express server adapter', () => {
             preferredCurrency: userTest.preferredCurrency,
         }
 
-        await server.registerNewUser(req, res)
+        await server.registerNewUser(req, res, next)
 
         expect(res.json).toHaveBeenCalledWith(userResponse)
     })
@@ -151,10 +154,10 @@ describe('Express server adapter', () => {
             password: 'Pass123+'
         }
 
-        await server.registerNewUser(req, res)
+        await server.registerNewUser(req, res, next)
 
-        expect(res.status).toHaveBeenCalledWith(400)
-        expect(json).toHaveBeenCalledWith('error creating user')
+        expect(next.mock.calls[0][0].status).toBe(400)
+        expect(next.mock.calls[0][0].message).toBe('User already exists')
     })
 
     test('should send a new token when login endpoint is called with correct credentials', async () => {
@@ -163,7 +166,7 @@ describe('Express server adapter', () => {
             password: 'password'
         }
 
-        await server.login(req, res)
+        await server.login(req, res, next)
 
         expect(res.json).toHaveBeenCalledWith({ token: 'token' })
     })
@@ -174,14 +177,14 @@ describe('Express server adapter', () => {
             password: 'password'
         }
 
-        await server.login(req, res)
+        await server.login(req, res, next)
 
-        expect(res.status).toHaveBeenCalledWith(401)
-        expect(json).toHaveBeenCalledWith('incorrect user or password')
+        expect(next.mock.calls[0][0].status).toBe(401)
+        expect(next.mock.calls[0][0].message).toBe('Invalid user or password')
     })
 
     test('should return cryptocoins when get cryptocoins endpoint is called', async () => {
-        await server.getCryptocoins(req, res)
+        await server.getCryptocoins(req, res, next)
 
         expect(res.json).toHaveBeenCalledWith({ cryptocoins: [cryptocoinTest] })
     })
@@ -189,24 +192,25 @@ describe('Express server adapter', () => {
     test('should send an error when get cryptocoins endpoint is called and cryptocoins service fails', async () => {
         userTest.preferredCurrency = 'error'
 
-        await server.getCryptocoins(req, res)
+        await server.getCryptocoins(req, res, next)
 
-        expect(res.status).toHaveBeenCalledWith(404)
-        expect(json).toHaveBeenCalledWith('error requesting cryptocoins to service')
+        expect(next.mock.calls[0][0].status).toBe(500)
+        expect(next.mock.calls[0][0].message).toBe('cryptocurrencies service not available')
     })
 
     test('should return cryptocoins of user when ger user cryptocoins endpoint is called', async () => {
-        await server.getUserCryptocoins(req, res)
+        await server.getUserCryptocoins(req, res, next)
 
         expect(res.json).toHaveBeenCalledWith({ cryptocoins: [cryptocoinTest] })
     })
 
-    test('should send an error when get user cryptocoins endpoint is called and cryptocoins service fails', async () => {
+    test('should send an error when get user cryptocoins endpoint is called and cryptocoins service fails',
+        async () => {
         userTest._id = 'error'
 
-        await server.getUserCryptocoins(req, res)
+        await server.getUserCryptocoins(req, res, next)
 
-        expect(res.status).toHaveBeenCalledWith(404)
-        expect(json).toHaveBeenCalledWith('error requesting cryptocoins to service')
+        expect(next.mock.calls[0][0].status).toBe(500)
+        expect(next.mock.calls[0][0].message).toBe('cryptocurrencies service not available')
     })
 })

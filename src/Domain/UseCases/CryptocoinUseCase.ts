@@ -7,6 +7,8 @@ import { inject, injectable } from 'inversify'
 import { TYPES } from '../../IOC/types'
 import { ICryptocoinService } from '../../Interfaces/ICryptocoinService'
 import 'reflect-metadata'
+import { CryptocoinError } from '../../Models/CryptocoinError'
+import { ErrorType } from '../../Models/ErrorType'
 
 @injectable()
 export class CryptocoinUseCase implements ICryptocoinUseCase {
@@ -29,7 +31,7 @@ export class CryptocoinUseCase implements ICryptocoinUseCase {
             user.password = await this.auth.encodePassword(user.password)
             return this.database.createUser(user)
         }
-        throw new Error('User already exists')
+        throw new CryptocoinError(ErrorType.EXISTING_USER, null)
     }
 
     async login(userName: string, password: string): Promise<string> {
@@ -38,10 +40,10 @@ export class CryptocoinUseCase implements ICryptocoinUseCase {
             if (await this.auth.isValidPassword(password, user.password)) {
                 return this.auth.getNewToken(user)
             } else {
-                throw new Error('Invalid user or password')
+                throw new CryptocoinError(ErrorType.INVALID_CREDENTIALS, null)
             }
         }
-        throw new Error('Invalid user or password')
+        throw new CryptocoinError(ErrorType.INVALID_CREDENTIALS, null)
     }
 
     async getCryptocoins(preferredCurrency: string): Promise<CryptoCoin[]> {
@@ -65,7 +67,7 @@ export class CryptocoinUseCase implements ICryptocoinUseCase {
                 })
                 .slice(0, limit)
         } else {
-            throw new Error('user not found')
+            throw new CryptocoinError(ErrorType.USER_NOT_FOUND, null)
         }
     }
 
@@ -73,7 +75,7 @@ export class CryptocoinUseCase implements ICryptocoinUseCase {
         const user = await this.database.getUser(userId)
         if (user) {
             if (user.cryptoCoins.some(coin => coin.id === cryptocoinId)) {
-                throw new Error('The cryptocoin already was added')
+                throw new CryptocoinError(ErrorType.CRYPTOCOIN_DUPLICATED, null)
             }
             const cryptocoin = await this.cryptocoinService.getUserCryptocoins(user.preferredCurrency, [cryptocoinId])
             if (cryptocoin && cryptocoin.length > 0) {
@@ -81,7 +83,7 @@ export class CryptocoinUseCase implements ICryptocoinUseCase {
                 await this.database.updateUser(user)
             }
         } else {
-            throw new Error('user not found')
+            throw new CryptocoinError(ErrorType.USER_NOT_FOUND, null)
         }
     }
 }
